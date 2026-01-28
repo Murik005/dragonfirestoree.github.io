@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRAGON FIRE STORE | Standoff 2 Аккаунты & Gold</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #ff2a6d;
+            --secondary: #ff6b35;
+            --accent: #f7931e;
+            --dark: #0a0a1a;
+            --light: #f8f9fa;
+            --success: #4ade80;
+            --danger: #ef4444;
+            --gold: #ffd700;
+            --lava: #ff4500;
+            --smoke: rgba(30, 30, 40, 0.7);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: var(--light);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 🔥 Лава и дракон — фон */
+        .dragon-lava-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .lava-layer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle at center, rgba(255, 67, 109, 0.6) 0%, rgba(255, 107, 53, 0.4) 50%, transparent 100%);
+            animation: lavaFlow 20s infinite linear;
+        }
+
+        @keyframes lavaFlow {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .dragon-head {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 200px;
+            height: 150px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M50,50 Q100,20 150,50 Q170,70 160,100 Q140,130 100,120 Q60,130 50,100 Z" fill="%23ff2a6d" stroke="%23ff6b35" stroke-width="2"/><circle cx="80" cy="70" r="12" fill="%23ff0000"/><circle cx="120" cy="70" r="12" fill="%23ff0000"/><path d="M70,90 Q90,100 110,90" stroke="%23ff6b35" stroke-width="3" fill="none"/></svg>') no-repeat center;
+            background-size: contain;
+            animation: dragonBreathe 4s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes dragonBreathe {
+            0% { transform: scale(1) rotate(-2deg); }
+            100% { transform: scale(1.05) rotate(2deg); }
+        }
+
+        /* 💣 Взрывные эффекты и пистолеты */
+        .gun-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+            background: 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M20,15 L30,10 L40,15 L40,25 L30,30 L20,25 Z" fill="%23ff6b35" opacity="0.6"/><circle cx="30" cy="35" r="8" fill="%23ff2a6d" opacity="0.4"/></svg>') repeat,
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><path d="M20,30 L40,20 L60,30 L60,50 L40,60 L20,50 Z" fill="%23f7931e" opacity="0.5"/><circle cx="40" cy="40" r="10" fill="%23ff2a6d" opacity="0.3"/></svg>') repeat;
+            background-size: 60px 60px, 80px 80px;
+            background-position: 0 0, 40px 40px;
+        }
+
+        .explosion {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,107,53,0.6) 50%, transparent 100%);
+            opacity: 0;
+            animation: explode 2s infinite;
+        }
+
+        .explosion:nth-child(1) { top: 20%; left: 15%; animation-delay: 0s; }
+        .explosion:nth-child(2) { top: 60%; right: 25%; animation-delay: 1.2s; }
+        .explosion:nth-child(3) { bottom: 30%; left: 30%; animation-delay: 2.5s; }
+        .explosion:nth-child(4) { top: 45%; right: 10%; animation-delay: 0.7s; }
+
+        @keyframes explode {
+            0% { transform: scale(0.3); opacity: 0; }
+            30% { opacity: 1; }
+            70% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 2.4rem;
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(255, 42, 109, 0.7);
+        }
+
+        .logo-icon {
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            position: relative;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .logo-text {
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 100px 20px 60px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .hero h1 {
+            font-size: 4.2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--gold), var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 25px rgba(255, 215, 0, 0.5);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
+        }
+
+        .price-range {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 25px 0;
+            color: var(--gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 60px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 15px 40px rgba(255, 42, 109, 0.6);
+            transition: all 0.4s cubic-bezier(0.17, 0.67, 0.88, 1.01);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px) scale(1.04);
+            box-shadow: 0 25px 55px rgba(255, 42, 109, 0.8);
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Sections */
+        .section {
+            padding: 90px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 70px;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--gold));
+            border-radius: 10px;
+        }
+
+        /* Game Windows Grid */
+        .windows-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .game-window {
+            background: rgba(10, 10, 30, 0.7);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .game-window:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 60px rgba(255, 42, 109, 0.4);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .window-header {
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.2), rgba(255, 107, 53, 0.1));
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .window-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .window-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .window-content {
+            padding: 25px;
+        }
+
+        .window-price {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--success);
+            margin: 20px 0;
+            text-shadow: 0 2px 8px rgba(74, 222, 128, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+        }
+
+        .features-list {
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 10px 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-item i {
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+        }
+
+        .buy-btn::before {
+            content: '→';
+            position: absolute;
+            right: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            transform: translateX(8px);
+        }
+
+        .buy-btn:hover::before {
+            opacity: 1;
+        }
+
+        /* Special Gold Section */
+        .gold-section {
+            background: radial-gradient(circle at center, rgba(255, 107, 53, 0.15) 0%, rgba(10, 10, 30, 0.5) 70%);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+        }
+
+        .gold-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            border: 8px solid var(--gold);
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .gold-title {
+            font-size: 2.8rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .gold-offer {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .gold-amount {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin: 15px 0;
+        }
+
+        .gold-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--success);
+            margin: 15px 0;
+        }
+
+        .gold-badge {
+            display: inline-block;
+            background: var(--danger);
+            color: white;
+            padding: 8px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 15px;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(5, 5, 20, 0.8);
+            padding: 60px 20px 30px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            background: linear-gradient(45deg, var(--gold), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 35px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 35px 0;
+        }
+
+        .social-link {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-link:hover {
+            background: var(--gold);
+            transform: translateY(-8px) rotate(10deg);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.5);
+            color: #1a1a2e;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 35px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero p {
+                font-size: 1.3rem;
+            }
+            
+            .cta-button {
+                padding: 16px 45px;
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2.4rem;
+            }
+            
+            .window-price {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 70px 15px 40px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .price-range {
+                padding: 12px 25px;
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновые элементы -->
+    <div class="dragon-lava-bg">
+        <div class="lava-layer"></div>
+        <div class="dragon-head"></div>
+        <div class="gun-pattern"></div>
+        <div class="explosion"></div>
+        <div class="explosion"></div>
+        <div class="explosion"></div>
+        <div class="explosion"></div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-dragon"></i>
+            </div>
+            <div class="logo-text">DRAGON FIRE STORE</div>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>🔥 АККАУНТЫ STANDOFF 2<br>от <span style="color:#4ade80">50₽</span> до <span style="color:#ffd700">3500₽</span>!</h1>
+        <p>Огненные аккаунты с редкими скинами, высоким рангом и эксклюзивными предметами. Гарантия безопасности и мгновенная доставка!</p>
+        <div class="price-range">💰 Цены: от 50₽ до 3500₽ — для любого бюджета!</div>
+        <a href="#accounts" class="cta-button">ПОЛУЧИТЬ АККАУНТ СЕЙЧАС</a>
+    </section>
+
+    <section class="section" id="accounts">
+        <h2 class="section-title">🔥 ИГРОВЫЕ ОКОШКИ</h2>
+        <div class="windows-grid">
+            <!-- Окно 1 -->
+            <div class="game-window">
+                <div class="window-header">
+                    <div class="window-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="window-title">LEGENDARY ELITE</div>
+                </div>
+                <div class="window-content">
+                    <div class="window-price">
+                        <i class="fas fa-coins"></i>
+                        3 500 ₽
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <span>Ранг: Supreme Elite</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-diamond"></i>
+                            <span>Скинов: 80+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>Трофеев: 200+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Без пароля — готов к игре</span>
+                        </div>
+                    </div>
+                    <button class="buy-btn">Купить за 3 500 ₽</button>
+                </div>
+            </div>
+
+            <!-- Окно 2 -->
+            <div class="game-window">
+                <div class="window-header">
+                    <div class="window-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="window-title">VIP GOLD PACK</div>
+                </div>
+                <div class="window-content">
+                    <div class="window-price">
+                        <i class="fas fa-coins"></i>
+                        1 890 ₽
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <span>Ранг: Global Elite</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-diamond"></i>
+                            <span>Скинов: 45+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-coins"></i>
+                            <span>Монет: 120 000+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Без пароля — готов к игре</span>
+                        </div>
+                    </div>
+                    <button class="buy-btn">Купить за 1 890 ₽</button>
+                </div>
+            </div>
+
+            <!-- Окно 3 -->
+            <div class="game-window">
+                <div class="window-header">
+                    <div class="window-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="window-title">STARTER BUNDLE</div>
+                </div>
+                <div class="window-content">
+                    <div class="window-price">
+                        <i class="fas fa-coins"></i>
+                        590 ₽
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <span>Ранг: Master Guardian</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-diamond"></i>
+                            <span>Скинов: 22+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-coins"></i>
+                            <span>Монет: 35 000+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Без пароля — готов к игре</span>
+                        </div>
+                    </div>
+                    <button class="buy-btn">Купить за 590 ₽</button>
+                </div>
+            </div>
+
+            <!-- Окно 4 -->
+            <div class="game-window">
+                <div class="window-header">
+                    <div class="window-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div class="window-title">BUDGET HERO</div>
+                </div>
+                <div class="window-content">
+                    <div class="window-price">
+                        <i class="fas fa-coins"></i>
+                        199 ₽
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <span>Ранг: Lieutenant</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-diamond"></i>
+                            <span>Скинов: 8+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-coins"></i>
+                            <span>Монет: 10 000+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Без пароля — готов к игре</span>
+                        </div>
+                    </div>
+                    <button class="buy-btn">Купить за 199 ₽</button>
+                </div>
+            </div>
+
+            <!-- Окно 5 -->
+            <div class="game-window">
+                <div class="window-header">
+                    <div class="window-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="window-title">NEWBIE START</div>
+                </div>
+                <div class="window-content">
+                    <div class="window-price">
+                        <i class="fas fa-coins"></i>
+                        50 ₽
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <span>Ранг: Corporal</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-diamond"></i>
+                            <span>Скинов: 3+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-coins"></i>
+                            <span>Монет: 5 000+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Без пароля — готов к игре</span>
+                        </div>
+                    </div>
+                    <button class="buy-btn">Купить за 50 ₽</button>
+                </div>
+            </div>
+
+            <!-- Окно 6 -->
+            <div class="game-window">
+                <div class="window-header">
+                    <div class="window-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="window-title">ULTRA RARE</div>
+                </div>
+                <div class="window-content">
+                    <div class="window-price">
+                        <i class="fas fa-coins"></i>
+                        2 750 ₽
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-star"></i>
+                            <span>Ранг: Supreme Elite</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-diamond"></i>
+                            <span>Скинов: 70+ (включая легендарные)</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>Трофеев: 180+</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Без пароля — готов к игре</span>
+                        </div>
+                    </div>
+                    <button class="buy-btn">Купить за 2 750 ₽</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">💎 КУПИТЬ GOLD</h2>
+        <div class="gold-section">
+            <div class="gold-title">ГОЛДА В ПОДАРОК! 🎁</div>
+            <p style="font-size: 1.4rem; margin-bottom: 30px; color: rgba(255,255,255,0.9);">
+                Самая выгодная акция месяца — только у нас!
+            </p>
+            
+            <div class="gold-offer">
+                <div class="gold-amount">1 000 ГОЛДЫ</div>
+                <div class="gold-price">560 ₽</div>
+                <div class="gold-badge">🔥 АКЦИЯ! СКИДКА 40%</div>
+                <p style="margin-top: 20px; color: rgba(255,255,255,0.8); font-size: 1.1rem;">
+                    Быстрая доставка в течение 2 минут после оплаты.<br>
+                    Подходит для всех версий Standoff 2 (Android/iOS).
+                </p>
+                <button class="buy-btn" style="background: linear-gradient(45deg, #4ade80, #22c55e); margin-top: 20px;">
+                    КУПИТЬ 1000 ГОЛД ЗА 560 ₽
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-logo">DRAGON FIRE STORE</div>
+        <p class="footer-text">
+            Мы продаем только проверенные аккаунты Standoff 2 и Gold по самым низким ценам в интернете.<br>
+            Гарантируем безопасность, мгновенную доставку и поддержку 24/7.
+        </p>
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="copyright">
+            © 2026 DRAGON FIRE STORE — Все права защищены. Аккаунты не являются товаром, подлежащим лицензированию.
+        </div>
+    </footer>
+
+    <script>
+        // Динамические эффекты
+        document.addEventListener('DOMContentLoaded', function() {
+            // Генерация взрывов при загрузке
+            const explosions = document.querySelectorAll('.explosion');
+            explosions.forEach((el, i) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.animation = 'explode 2s forwards';
+                }, i * 500);
+            });
+
+            // Кнопки покупки
+            document.querySelectorAll('.buy-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const windowTitle = this.closest('.game-window').querySelector('.window-title')?.textContent || 'Аккаунт';
+                    const price = this.closest('.window-content').querySelector('.window-price')?.textContent?.replace(/\D/g, '') || '50';
+                    
+                    let message = `✅ Заказ принят!\n\nВы выбрали: ${windowTitle}\nЦена: ${price} ₽\n\n`;
+                    
+                    if (this.textContent.includes('1000 ГОЛД')) {
+                        message += 'Свяжемся с вами в Telegram в течение 1 минуты для оплаты через СБП/ЮKassa.';
+                    } else {
+                        message += 'Свяжемся с вами в Telegram в течение 2 минут для оплаты через СБП/ЮKassa.';
+                    }
+                    
+                    alert(message);
+                });
+            });
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 90,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Анимация при скролле
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.game-window').forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
+
